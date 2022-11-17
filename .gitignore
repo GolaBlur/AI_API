@@ -1,0 +1,11 @@
+### connector
+/aws/aws_connector.py
+
+### pycache
+/aws/__pycache__
+/function/__pycache__
+/service/__pycache__
+
+### resource
+/resources
+
