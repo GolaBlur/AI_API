@@ -2,7 +2,8 @@
 from flask import Flask 
 ### os
 import os
-
+### Image
+from PIL import Image
 
 ### Service
 from service.DeepFakerSerivce import *
@@ -16,14 +17,18 @@ app = Flask(__name__)
 
 # TEST
 from service.awsS3Service import *
-@app.route('/test/iii', methods=['POST'])
+@app.route('/test/upload', methods=['POST'])
 def test():
-    data = open('resources/file/upload/test.jpg','rb')
-    return store.store_file_at_s3(test, data)
+    data = open('resources/file/upload/ttt.jpg', 'rb')
+    
+    return tests3.test_upload_file(data)
 
-@app.route('/test/s3/list', methods = ['POST'])
+@app.route('/test/download', methods = ['POST'])
 def s3_list():
-    tests3.get_s3_list()
+    
+    tests3.test_download_file()
+    
+    
     return '200'
 ### Route
 

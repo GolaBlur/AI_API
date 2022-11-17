@@ -1,19 +1,23 @@
 import boto3
-from aws.aws_connector import *
+from config.config import *
 
 
-BUCKET_NAME = 'golablur'
+### S3 Connection ###
+def s3_connection():
+    s3_bucket = boto3.client('s3',
+                          aws_access_key_id = AWS_ACCESS_KEY,
+                          aws_secret_access_key = AWS_SECRET_KEY)
+    return s3_bucket
+
+
 
 class store:
     
     
-    def store_file_at_s3(file_id, file):
-        golablur = s3_connector.connect_to_s3_bucket()
-        return golablur.upload_file(
-            Filename = file, 
-            Bucket = BUCKET_NAME,
-            Key = 'python/'+file_id+'.jpg'
-        )
+    def store_file_at_s3():
+        
+        
+        return
     
     def store_object_at_s3():
         
@@ -42,10 +46,23 @@ class bring:
 
 class tests3:
     
-    def get_s3_list():
-        s3_connector.connect_to_s3_bucket()
+    def test_upload_file(file):
         
-        s3 = boto3.resource("s3")
+        s3 = s3_connection()
         
-        for bucket in s3.buckets.all():
-            print(bucket.name)
+        s3.put_object(
+            Bucket = BUCKET_NAME,
+            Body = file,
+            Key = 'hihi/ttt.jpg',
+            ACL = 'public-read'
+        )
+        
+        return '200'
+        
+    def test_download_file():
+        
+        s3 = s3_connection()
+        
+        s3.download_file(BUCKET_NAME, 'hihi/ttt.jpg', 'resources/file/download/wow.jpg')
+        
+        return '200'
