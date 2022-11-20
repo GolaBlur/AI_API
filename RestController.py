@@ -1,73 +1,99 @@
 ### flask
 from flask import Flask 
-### os
-import os
-### Image
-from PIL import Image
 
 ### Service
-from service.DeepFakerSerivce import *
-from service.DeleteService import *
-from service.MosaicService import *
-from service.ObjectDetection import *
+from service.AIService import *
+# from service.awsS3Service import *
+
 
 app = Flask(__name__)
 # api = Api(app)
 
 
-# TEST
-from service.awsS3Service import *
-@app.route('/test/upload', methods=['POST'])
-def test():
-    data = open('resources/file/upload/ttt.jpg', 'rb')
-    
-    return tests3.test_upload_file(data)
 
-@app.route('/test/download', methods = ['POST'])
-def s3_list():
-    
-    tests3.test_download_file()
-    
-    
-    return '200'
 ### Route
 
-# input : aiFunctionDTO
+# input : AIFunctionDTO
 # output : FileEntity
 @app.route('/process/deepFake/one/image', methods=['POST'])
-def deepFakeOneImage():
-    return DeepFake.image()
+def deepFakeOneImage(AIFunctionDTO):
+    return DeepFake.image(AIFunctionDTO)
 
-# input : aiFunctionDTO
+# input : AIFunctionDTO
 # output : FileEntity
 @app.route('/process/deepFake/one/video', methods=['POST'])
-def deepFakeOneVideo():
-    return DeepFake.video()
+def deepFakeOneVideo(AIFunctionDTO):
+    return DeepFake.video(AIFunctionDTO)
 
-# input : aiFunctionDTO
+# input : AIFunctionDTO
 # output : FileEntity
 @app.route('/process/delete/one/image', methods=['POST'])
-def deleteOneImage():
-    return Delete.image()
+def deleteOneImage(AIFunctionDTO):
+    return Delete.image(AIFunctionDTO)
 
-# input : aiFunctionDTO
+# input : AIFunctionDTO
 # output : FileEntity
 @app.route('/process/mosaic/one/image', methods=['POST'])
-def mosaicOneImage():
-    return Mosaic.image()
+def mosaicOneImage(AIFunctionDTO):
+    return Mosaic.image(AIFunctionDTO)
 
-# input : aiFunctionDTO
+# input : AIFunctionDTO
 # output : FileEntity
 @app.route('/process/mosaic/one/video', methods=['POST'])
-def mosaicOneVideo():
-    return Mosaic.video()
+def mosaicOneVideo(AIFunctionDTO):
+    return Mosaic.video(AIFunctionDTO)
 
 # input : FileEntity
 # output : List<ObjectEntity>
-@app.route('/process/detection', methods=['POST'])
-def detection():
-    return ObjectDetection.image()
+@app.route('/process/detection/image', methods=['POST'])
+def detectionOneImage(FileEntity):
+    return ObjectDetection.image(FileEntity)
+
+# input : FileEntity
+# output : List<ObjectEntity>
+@app.route('/process/detection/video', methods=['POST'])
+def detectionOneVideo(FileEntity):
+    return ObjectDetection.video(FileEntity)
 
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8888)
+
+
+
+
+
+# # TEST
+
+# @app.route('/test/upload/image', methods=['POST'])
+# def upload_image():
+    
+#     data = open('resources/file/upload/ttt.jpg', 'rb')
+    
+#     return tests3.test_upload_image(data)
+
+# @app.route('/test/download/image', methods = ['POST'])
+# def download_image():
+    
+#     tests3.test_download_image()
+    
+#     return '200'
+
+# @app.route('/test/upload/video', methods = ['POST'])
+# def upload_video():
+    
+#     data = open('resources/file/upload/yeye.mp4', 'rb')
+    
+#     tests3.test_upload_video(data)
+    
+#     return '200'
+
+# @app.route('/test/download/video', methods = ['POST'])
+# def download_video():
+    
+#     tests3.test_download_video()
+    
+#     return '200 '
+
+
+

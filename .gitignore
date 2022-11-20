@@ -1,11 +1,9 @@
-### connector
-/config/config.py
+### config
+/configuration
 
 ### pycache
-/config/__pycache__
 /function/__pycache__
 /service/__pycache__
 
 ### resource
 /resources
-
