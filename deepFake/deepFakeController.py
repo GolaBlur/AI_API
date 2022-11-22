@@ -1,4 +1,5 @@
 from flask import Flask
+from deepFake.deepFake import *
 
 app = Flask(__name__)
 
@@ -8,6 +9,9 @@ def do_deepFake(file_and_object_list):
     
     return
 
+@app.route('/test')
+def test():
+    return '200'
 
 
 if __name__ == "__main__":

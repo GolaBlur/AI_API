@@ -9,6 +9,10 @@ from service.AIService import *
 app = Flask(__name__)
 # api = Api(app)
 
+### TEST
+@app.route('/test')
+def test():
+    return '200'
 
 
 ### Route

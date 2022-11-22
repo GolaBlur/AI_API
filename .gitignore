@@ -2,8 +2,7 @@
 /configuration
 
 ### pycache
-/function/__pycache__
-/service/__pycache__
+__pycache__
 
 ### resource
 /resources
