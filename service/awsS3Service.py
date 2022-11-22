@@ -1,6 +1,6 @@
 import boto3
 from configuration.config import *
-import uuid
+import os
 
 
 ### S3 Connection ###
@@ -15,53 +15,50 @@ def s3_connection():
 def set_s3_path(entity):
     return entity.User_ID + '/' + entity.File_ID + '/'
 
+def set_s3_file_name(entity):
+    return entity.File_ID + '.' + entity.File_Extension
 
 
 ### S3에 파일 업로드 후 DB에 저장할 형태로 반환
 class store:
     
-    def store_file_at_s3(original_file_entity, file):
+    def store_file_at_s3(file_entity, file):
         
         s3 = s3_connection()
         
         ### 다운로드할 파일의 s3에서의 경로
-        path = set_s3_path(entity = original_file_entity)
-        
-        ## 저장할 새로운 파일의 id는 uid로 저장
-        file_id = uuid.uuid4()
+        file_name = set_s3_file_name(entity= file_entity)
+        path = set_s3_path(entity = file_entity) + file_name
         
         s3.put_object(
             Bucket = BUCKET_NAME,
             Body = file,
-            Key = path + file_id + '.' + original_file_entity.File_Extension,
+            Key = path,
             ACL = 'public-read'
         )
         
-        return file_id
     
     def store_object_at_s3(object_entity_list, object_list):
         
-        ### object_id 리스트를 반환
-        object_id_list = []
-        
         s3 = s3_connection()
+        
+        ### 다운로드할 파일의 s3에서의 경로
+        if object_entity_list.__sizeof__ != 0:
+            entity = object_entity_list[0]
+            path = set_s3_path(entity=entity) + 'object/'
         
         ### for each 문을 통해 list 내의 객체들 저장
         for object_ in object_list:
-            ### 다운로드할 파일의 s3에서의 경로
-            path = set_s3_path(entity = object_) + 'object/'
-            
-            ### object id 를 uid 로 설정
-            object_id = uuid.uuid4()
+            file_name = object_.name[len('resources/object/upload'):]
+            object_path = path + file_name
             
             s3.put_object(
                 Bucket = BUCKET_NAME,
                 Body = object_,
-                Key = path + object_id + processed_object_extension,
+                Key = object_path,
                 ACL = 'public-read'
             )
-                    
-        return 
+            
 
 
 class bring:
@@ -71,10 +68,11 @@ class bring:
         s3 = s3_connection()
         
         ### 가져올 파일의 경로
-        s3_path = set_s3_path(entity=file_entity)
+        file_name = set_s3_file_name(entity=file_entity)
+        s3_path = set_s3_path(entity=file_entity) + file_name        
         
         ### 저장할 경로 및 파일 명
-        local_path = 'resources/file/download/' + file_entity.File_ID + '.' + file_entity.File_Extension
+        local_path = 'resources/file/download/' + file_name
         
         
         s3.download_file(
@@ -95,9 +93,10 @@ class bring:
         ### for each  문을 통해 list 내의 객체들을 다운로드 후 리스트에 추가하여 반환
         for object_entity in object_list:
             ### 가져올 파일의 경로   
-            s3_path = set_s3_path(object_entity) + 'object/' + object_entity.Object_ID + processed_object_extension
+            file_name = set_s3_file_name(object_entity)
+            s3_path = set_s3_path(object_entity) + 'object/' + file_name
             ### 저장할 경로 및 파일 명
-            local_path = 'resources/object/download/' + object_entity.Object_ID + processed_object_extension
+            local_path = 'resources/object/download/' + file_name
             
             s3.download_file(
                 BUCKET_NAME,

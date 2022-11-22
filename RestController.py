@@ -1,5 +1,5 @@
 ### flask
-from flask import Flask 
+from flask import Flask, jsonify, request
 
 ### Service
 from service.AIService import *
@@ -13,47 +13,64 @@ app = Flask(__name__)
 
 ### Route
 
-# input : AIFunctionDTO
+# input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/deepFake/one/image', methods=['POST'])
-def deepFakeOneImage(AIFunctionDTO):
-    return DeepFake.image(AIFunctionDTO)
+def deepFakeOneImage():
+    FileObjectDTO = request.get_json()
+    print(FileObjectDTO)
+    print(FileObjectDTO.file)
+    return jsonify(DeepFake.image(FileObjectDTO))
 
-# input : AIFunctionDTO
+# input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/deepFake/one/video', methods=['POST'])
-def deepFakeOneVideo(AIFunctionDTO):
-    return DeepFake.video(AIFunctionDTO)
+def deepFakeOneVideo():
+    FileObjectDTO = request.get_json()
+    print(FileObjectDTO)
+    return jsonify(DeepFake.video(FileObjectDTO))
 
-# input : AIFunctionDTO
+# input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/delete/one/image', methods=['POST'])
-def deleteOneImage(AIFunctionDTO):
-    return Delete.image(AIFunctionDTO)
+def deleteOneImage():
+    FileObjectDTO = request.get_json()
+    print(FileObjectDTO)
+    return jsonify(Delete.image(FileObjectDTO))
 
-# input : AIFunctionDTO
+# input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/mosaic/one/image', methods=['POST'])
-def mosaicOneImage(AIFunctionDTO):
-    return Mosaic.image(AIFunctionDTO)
+def mosaicOneImage():
+    FileObjectDTO = request.get_json()
+    print(FileObjectDTO)
+    return jsonify(Mosaic.image(FileObjectDTO))
 
-# input : AIFunctionDTO
+# input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/mosaic/one/video', methods=['POST'])
-def mosaicOneVideo(AIFunctionDTO):
-    return Mosaic.video(AIFunctionDTO)
+def mosaicOneVideo():
+    FileObjectDTO = request.get_json()
+    print(FileObjectDTO)
+    return jsonify(Mosaic.video(FileObjectDTO))
 
 # input : FileEntity
 # output : List<ObjectEntity>
 @app.route('/process/detection/image', methods=['POST'])
-def detectionOneImage(FileEntity):
-    return ObjectDetection.image(FileEntity)
+def detectionOneImage():
+    FileEntity = request.get_json()
+    print(FileEntity)
+    print(FileEntity.file_ID)
+    return jsonify(ObjectDetection.image(FileEntity))
 
 # input : FileEntity
 # output : List<ObjectEntity>
 @app.route('/process/detection/video', methods=['POST'])
-def detectionOneVideo(FileEntity):
-    return ObjectDetection.video(FileEntity)
+def detectionOneVideo():
+    FileEntity = request.get_json()
+    print(FileEntity)
+    print(FileEntity.file_ID)
+    return jsonify(ObjectDetection.video(FileEntity))
 
 
 if __name__ == "__main__":
