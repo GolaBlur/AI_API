@@ -69,4 +69,4 @@ class useVideoAPI:
     
     def detection(file_entity):
         print("useImageAPI - detection")
-        return send_api(api_port=detection_port , method='POST' , body=file_entity))
+        return send_api(api_port=detection_port , method='POST' , body=file_entity)
