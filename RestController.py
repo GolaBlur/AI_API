@@ -21,15 +21,16 @@ def test():
 # output : FileEntity
 @app.route('/process/deepFake/one/image', methods=['POST'])
 def deepFakeOneImage():
+    print("rest controller - deepFakeOneImage")
     FileObjectDTO = request.get_json()
     print(FileObjectDTO)
-    print(FileObjectDTO.file)
     return jsonify(DeepFake.image(FileObjectDTO))
 
 # input : FileObjectDTO
 # output : FileEntity
 @app.route('/process/deepFake/one/video', methods=['POST'])
 def deepFakeOneVideo():
+    print("rest controller - deepFakeOneVideo")
     FileObjectDTO = request.get_json()
     print(FileObjectDTO)
     return jsonify(DeepFake.video(FileObjectDTO))
@@ -38,6 +39,7 @@ def deepFakeOneVideo():
 # output : FileEntity
 @app.route('/process/delete/one/image', methods=['POST'])
 def deleteOneImage():
+    print("rest controller - deleteOneImage")
     FileObjectDTO = request.get_json()
     print(FileObjectDTO)
     return jsonify(Delete.image(FileObjectDTO))
@@ -46,6 +48,7 @@ def deleteOneImage():
 # output : FileEntity
 @app.route('/process/mosaic/one/image', methods=['POST'])
 def mosaicOneImage():
+    print("rest controller - mosaicOneImage")
     FileObjectDTO = request.get_json()
     print(FileObjectDTO)
     return jsonify(Mosaic.image(FileObjectDTO))
@@ -54,6 +57,7 @@ def mosaicOneImage():
 # output : FileEntity
 @app.route('/process/mosaic/one/video', methods=['POST'])
 def mosaicOneVideo():
+    print("rest controller - mosaicOneVideo")
     FileObjectDTO = request.get_json()
     print(FileObjectDTO)
     return jsonify(Mosaic.video(FileObjectDTO))
@@ -62,18 +66,19 @@ def mosaicOneVideo():
 # output : List<ObjectEntity>
 @app.route('/process/detection/image', methods=['POST'])
 def detectionOneImage():
+    print("rest controller - detectionOneImage")
     FileEntity = request.get_json()
     print(FileEntity)
-    print(FileEntity.file_ID)
+    print(FileEntity['file_ID'])
     return jsonify(ObjectDetection.image(FileEntity))
 
 # input : FileEntity
 # output : List<ObjectEntity>
 @app.route('/process/detection/video', methods=['POST'])
 def detectionOneVideo():
+    print("rest controller - detectionOneVideo")
     FileEntity = request.get_json()
     print(FileEntity)
-    print(FileEntity.file_ID)
     return jsonify(ObjectDetection.video(FileEntity))
 
 

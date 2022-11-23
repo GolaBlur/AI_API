@@ -5,30 +5,28 @@ import os
 
 ### S3 Connection ###
 def s3_connection():
+    print("s3_connection")
     s3_bucket = boto3.client('s3',
                           aws_access_key_id = AWS_ACCESS_KEY,
                           aws_secret_access_key = AWS_SECRET_KEY)
     return s3_bucket
 
 
-### 저장할 경로 설정
-def set_s3_path(entity):
-    return entity.User_ID + '/' + entity.File_ID + '/'
-
 def set_s3_file_name(entity):
-    return entity.File_ID + '.' + entity.File_Extension
+    return entity['file_ID'] + entity['file_Extension']
 
 
 ### S3에 파일 업로드 후 DB에 저장할 형태로 반환
 class store:
     
     def store_file_at_s3(file_entity, file):
+        print("store_file_at_s3")
         
         s3 = s3_connection()
         
         ### 다운로드할 파일의 s3에서의 경로
         file_name = set_s3_file_name(entity= file_entity)
-        path = set_s3_path(entity = file_entity) + 'result/' + file_name
+        path = file_entity['path']
         
         s3.put_object(
             Bucket = BUCKET_NAME,
@@ -36,26 +34,21 @@ class store:
             Key = path,
             ACL = 'public-read'
         )
-        
     
     def store_object_at_s3(object_entity_list, object_list):
+        print("store_object_at_s3")
         
         s3 = s3_connection()
         
-        ### 다운로드할 파일의 s3에서의 경로
-        if object_entity_list.__sizeof__ != 0:
-            entity = object_entity_list[0]
-            path = set_s3_path(entity=entity) + 'object/'
-        
-        ### for each 문을 통해 list 내의 객체들 저장
-        for object_ in object_list:
-            file_name = object_.name[len('resources/object/upload'):]
-            object_path = path + file_name
+        ### s3 업로드
+        for i in range(object_list):
+            object_file = object_list[i]
+            object_entity = object_entity_list[i]
             
             s3.put_object(
                 Bucket = BUCKET_NAME,
-                Body = object_,
-                Key = object_path,
+                Body = object_file,
+                Key = object_entity['path'],
                 ACL = 'public-read'
             )
             
@@ -64,26 +57,34 @@ class store:
 class bring:
     
     def bring_file_from_s3(file_entity):
+        print("bring_file_from_s3")
         
         s3 = s3_connection()
         
         ### 가져올 파일의 경로
         file_name = set_s3_file_name(entity=file_entity)
-        s3_path = set_s3_path(entity=file_entity) + file_name        
+        s3_path = file_entity['path']        
         
         ### 저장할 경로 및 파일 명
         local_path = 'resources/file/download/' + file_name
         
+        print("before download file")
+        
+        print("file_name : " + file_name)
+        print("s3_path : " + s3_path)
+        print("local_path : " + local_path)
         
         s3.download_file(
             BUCKET_NAME,
             s3_path,
             local_path
         )
+        print("after download file")
         
         return open(local_path, 'rb')
     
     def bring_object_from_s3(object_list):
+        print("bring_object_from_s3")
         
         ### object file list
         object_file_list = []
@@ -94,7 +95,7 @@ class bring:
         for object_entity in object_list:
             ### 가져올 파일의 경로   
             file_name = set_s3_file_name(object_entity)
-            s3_path = set_s3_path(object_entity) + 'object/' + file_name
+            s3_path = object_entity['path']
             ### 저장할 경로 및 파일 명
             local_path = 'resources/object/download/' + file_name
             
