@@ -1,6 +1,10 @@
 from flask import Flask, jsonify, request
-from delete.delete import *
-
+import sys
+sys.path.append("C:/Users/eorl6/Documents/golablur")
+import golablur
+sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
+from service import useAPIService
+from delete import *
 app = Flask(__name__)
 
 
@@ -11,7 +15,9 @@ def execute():
 
 @app.route('/test')
 def test():
-    return '200'
+    img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
+    useAPIService.send_api('8884','POST',img.rm_bg())
+    return str(img.rm_bg())
 
 
 if __name__ == "__main__":
