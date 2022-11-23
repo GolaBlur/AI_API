@@ -1,12 +1,12 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from deepFake.deepFake import *
 
 app = Flask(__name__)
 
 
-@app.route('/do')
-def do_deepFake(file_and_object_list):
-    
+@app.route('/deepfake/execute')
+def execute():
+    file_and_object_list = request.get_json()
     return
 
 @app.route('/test')

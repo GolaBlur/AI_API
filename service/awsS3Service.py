@@ -28,7 +28,7 @@ class store:
         
         ### 다운로드할 파일의 s3에서의 경로
         file_name = set_s3_file_name(entity= file_entity)
-        path = set_s3_path(entity = file_entity) + file_name
+        path = set_s3_path(entity = file_entity) + 'result/' + file_name
         
         s3.put_object(
             Bucket = BUCKET_NAME,

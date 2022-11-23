@@ -1,12 +1,12 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from detection.detection import *
 
 app = Flask(__name__)
 
 
-@app.route('/do')
-def do_detection(file):
-    
+@app.route('/detection/execute')
+def execute():
+    file = request.get_json()
     return
 
 @app.route('/test')

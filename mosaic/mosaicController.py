@@ -1,12 +1,12 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from mosaic.mosaic import *
 
 app = Flask(__name__)
 
 
-@app.route('/do')
-def do_mosaic(file_and_object_list):
-    
+@app.route('/mosaic/execute')
+def execute():
+    file_and_object_list = request.get_json()
     return
 
 @app.route('/test')
