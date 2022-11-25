@@ -43,7 +43,16 @@ def execute_test(file_entity):
 
 
 
+class ex_detection:
 
+    def objects():
+        path = 'C:/Users/eorl6/Documents/golablur/car.jpg'
+        list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
+        print(list)
+        for i in range(len(list)):
+            list[i][0] = names(list[i][0])
+        list.append(path)
+        return list
 
 
 
