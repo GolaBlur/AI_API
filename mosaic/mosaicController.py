@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from mosaic import *
+from mosaic_execute import *
 
 app = Flask(__name__)
 
@@ -11,14 +11,14 @@ app = Flask(__name__)
 def image_mosaic_execute():
     print('image_mosaic_execute')
     req = request.get_json()
-    res = mosaic.image(req)
+    res = mosaic_execute.image(req)
     return res
 
 @app.route('/video/mosaic/execute', metohds=['POST', 'GET'])
 def video_mosaic_execute():
     print('video_mosaic_execute')
     req = request.get_json()
-    res = mosaic.video(req)
+    res = mosaic_execute.video(req)
     return res
 
 @app.route('/test')

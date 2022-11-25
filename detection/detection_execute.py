@@ -2,7 +2,7 @@
 from ..service.awsS3Service import *
 
 
-class detection():
+class detection_execute:
     
     def image(file_entity):
         ## s3에서 처리할 파일 다운로드

@@ -1,8 +1,6 @@
 from ..service.awsS3Service import *
 
-
-
-class mosaic:
+class deepFake_execute:
     
     def image(file_entity, object_entity_list):
         ## s3에서 처리할 파일 다운로드
@@ -11,7 +9,7 @@ class mosaic:
         ### 객체의 좌표값 추출
         coordinate = get_object_coordinate(object_entity_list=object_entity_list)
         
-        ## TODO 이미지 모자이크 기능 함수 구현 후 여기서 호출하여 기능 수행
+        ## TODO 이미지 딥페이크 기능 함수 구현 후 여기서 호출하여 기능 수행
         ## 기능 수행
         res_file = 'file과 object_list, coordinate를 통해 기능 수행!!'
         
@@ -23,7 +21,7 @@ class mosaic:
         
         return res_file_entity
     
-    def video(file_and_object_list):
+    def video():
         
         return
 

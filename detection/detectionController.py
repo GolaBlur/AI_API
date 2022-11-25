@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 # from yolov5 import detect
 # from detection import *
 
-from detection import *
+from detection_execute import *
 
 app = Flask(__name__)
 
@@ -16,14 +16,14 @@ app = Flask(__name__)
 def image_detection_execute():
     print('image_detection_execute')
     req = request.get_json()
-    res = detection.image(req)
+    res = detection_execute.image(req)
     return jsonify(res)
 
 @app.route('/video/detection/execute', methods=['POST','GET'])
 def video_detection_execute():
     print('video_detection_execute')
     req = request.get_json()
-    res = detection.video(req)
+    res = detection_execute.video(req)
     return jsonify(res)
 
     

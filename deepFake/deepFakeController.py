@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from deepFake import *
+from deepFake_execute import *
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ def image_deepfake_execute():
     print('image_deepfake_execute')
     req = request.get_json()
     ## TODO 이미지 딥페이크 구현 필요
-    res = deepFake.image(file_entity=req['file'], object_entity_list=req['objectList'])
+    res = deepFake_execute.image(file_entity=req['file'], object_entity_list=req['objectList'])
     return jsonify(res)
 
 @app.route('/video/deepfake/execute', methods=['POST','GET'])
@@ -20,7 +20,7 @@ def video_deepfake_execute():
     print('video_deepfake_execute')
     req = request.get_json()
     ## TODO 비디오 딥페이크 로직 설계 및 구현 필요
-    res = deepFake.video()
+    res = deepFake_execute.video()
     return jsonify(res)
 
 

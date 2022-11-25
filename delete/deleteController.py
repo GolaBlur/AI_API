@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 # import golablur
 # sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
 # from service import useAPIService
-from delete import *
+from delete_execute import *
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ app = Flask(__name__)
 def image_delete_execute():
     print('image_delete_execute')
     req = request.get_json()
-    res = delete.image(req)
+    res = delete_execute.image(req)
     return jsonify(res)
 
 
