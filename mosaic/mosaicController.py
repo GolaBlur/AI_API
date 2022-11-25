@@ -1,13 +1,25 @@
 from flask import Flask, jsonify, request
-from mosaic.mosaic import *
+from mosaic import *
 
 app = Flask(__name__)
 
+# input : FileObjectDTO
+# output : FileEntity
 
-@app.route('/mosaic/execute')
-def execute():
-    file_and_object_list = request.get_json()
-    return
+
+@app.route('/image/mosaic/execute', metohds=['POST', 'GET'])
+def image_mosaic_execute():
+    print('image_mosaic_execute')
+    req = request.get_json()
+    res = mosaic.image(req)
+    return res
+
+@app.route('/video/mosaic/execute', metohds=['POST', 'GET'])
+def video_mosaic_execute():
+    print('video_mosaic_execute')
+    req = request.get_json()
+    res = mosaic.video(req)
+    return res
 
 @app.route('/test')
 def test():
