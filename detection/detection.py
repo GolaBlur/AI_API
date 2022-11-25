@@ -1,13 +1,8 @@
-
 from yolov5 import detect
 
-class ex_detection:
-    def objects():
-        list = detect.run(source='C:/Users/eorl6/Documents/golablur/car.jpg',weights='yolov5n6.pt', save_txt=True)
-        return list
 
-    def names(num):
-        num = int(num)
+def names(num):
+        number = int(num)
         names={
             0: "person",
             1: "bicycle",
@@ -90,4 +85,17 @@ class ex_detection:
             78: "hair drier",
             79: "toothbrush"
         }
-        return str(names[num])
+        return str(names[number])
+
+class ex_detection:
+
+    def objects():
+        path = 'C:/Users/eorl6/Documents/golablur/car.jpg'
+        list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
+        print(list)
+        for i in range(len(list)):
+            list[i][0] = names(list[i][0])
+        list.append(path)
+        return list
+
+    

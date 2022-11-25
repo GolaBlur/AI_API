@@ -3,6 +3,8 @@ from configuration.config import *
 import json
 import requests
 import datetime
+import base64
+import numpy as np
 
 
 def json_default(value):
@@ -13,24 +15,28 @@ def json_default(value):
 def send_api(api_port , method, body):
     print("send_api")
     
-    url = 'http://localhost:'+api_port+'/detection/execute'
+    url = 'http://localhost:'+api_port+'/delete/execute'
     
     headers = {'Content-Type' : 'application/json', 'charset' : 'UTF-8', 'Accept' : '*/*'}
     
     data = {}
     data['file'] = body
     
+    response = None
     try:
         if method == 'GET':
             response = requests.get(url, headers= headers)
         elif method == 'POST':
             data = json.dumps(body, ensure_ascii=False, indent='\t', default=json_default)
-            print(data)
-            response = requests.post(url, headers=headers, data=data)
+            # data = base64.b64decode(body)
+            # print(data)
+            # data = np.frombuffer(data, dtype=np.uint8)
+            response = requests.post(url, data=data, headers=headers)
         print("response status %r" %response.status_code)
         print("response text %r" %response.text)
     except Exception as ex:
         print(ex)
+        print("send Exception")
     
     return response
 
