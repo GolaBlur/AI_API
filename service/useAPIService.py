@@ -12,17 +12,15 @@ def json_default(value):
     return value.strftime('%Y-%m-%d')
   raise TypeError('not JSON serializable')
 
-def send_api(api_port , method, body):
+def send_api(url , method, body):
     print("send_api")
     
-    url = 'http://localhost:'+api_port+'/delete/execute'
     
     headers = {'Content-Type' : 'application/json', 'charset' : 'UTF-8', 'Accept' : '*/*'}
     
     data = {}
     data['file'] = body
     
-    response = None
     try:
         if method == 'GET':
             response = requests.get(url, headers= headers)
@@ -33,46 +31,46 @@ def send_api(api_port , method, body):
             # data = np.frombuffer(data, dtype=np.uint8)
             response = requests.post(url, data=data, headers=headers)
         print("response status %r" %response.status_code)
-        print("response text %r" %response.text)
+        print("response json %r" %response.json())
     except Exception as ex:
         print(ex)
         print("send Exception")
     
-    return response
+    return response.json()
 
 
-class useImageAPI:
+# class useImageAPI:
     
-    def deepFake(file_and_object_entity_list):
-        print("useImageAPI - deepFake")
-        return send_api(api_port=deepFake_port , method='POST' , body=file_and_object_entity_list)
+#     def deepFake(file_and_object_entity_list):
+#         print("useImageAPI - deepFake")
+#         return send_api(url='http://localhost:'+ deepFake_port +'/deepFake/execute' , method='POST' , body=file_and_object_entity_list)
     
-    def delete(file_and_object_entity_list):
-        print("useImageAPI - delete")
-        return send_api(api_port=delete_port , method='POST' , body=file_and_object_entity_list)
+#     def delete(file_and_object_entity_list):
+#         print("useImageAPI - delete")
+#         return send_api(url='http://localhost:'+ delete_port +'/delete/execute' , method='POST' , body=file_and_object_entity_list)
     
-    def mosaic(file_and_object_entity_list):
-        print("useImageAPI - mosaic")
-        return send_api(api_port=mosaic_port , method='POST' , body=file_and_object_entity_list)
+#     def mosaic(file_and_object_entity_list):
+#         print("useImageAPI - mosaic")
+#         return send_api(url='http://localhost:'+ mosaic_port +'/mosaic/execute' , method='POST' , body=file_and_object_entity_list)
     
-    def detection(file_entity):        
-        print("useImageAPI - detection")
-        return send_api(api_port=detection_port , method='POST' , body=file_entity)
+#     def detection(file_entity):        
+#         print("useImageAPI - detection")
+#         return send_api(url='http://localhost:'+ detection_port +'/detection/execute' , method='POST' ,  body=file_entity)
 
-class useVideoAPI:
+# class useVideoAPI:
     
-    def deepFake(file_and_object_entity_list):
-        print("useVideoAPI - deepFake")        
-        return send_api(api_port=deepFake_port , method='POST' , body=file_and_object_entity_list)
+#     def deepFake(file_and_object_entity_list):
+#         print("useVideoAPI - deepFake")        
+#         return send_api(url='http://localhost:'+ deepFake_port +'/deepFake/execute' , method='POST' , body=file_and_object_entity_list)
     
-    def delete(file_and_object_entity_list):
-        print("useImageAPI - delete")
-        return send_api(api_port=delete_port , method='POST' , body=file_and_object_entity_list)
+#     def delete(file_and_object_entity_list):
+#         print("useImageAPI - delete")
+#         return send_api(url='http://localhost:'+ delete_port +'/delete/execute' , method='POST' ,  body=file_and_object_entity_list)
     
-    def mosaic(file_and_object_entity_list):
-        print("useImageAPI - mosaic")
-        return send_api(api_port=mosaic_port , method='POST' , body=file_and_object_entity_list)
+#     def mosaic(file_and_object_entity_list):
+#         print("useImageAPI - mosaic")
+#         return send_api(url='http://localhost:'+ mosaic_port +'/mosaic/execute' , method='POST' , body=file_and_object_entity_list)
     
-    def detection(file_entity):
-        print("useImageAPI - detection")
-        return send_api(api_port=detection_port , method='POST' , body=file_entity)
+#     def detection(file_entity):
+#         print("useImageAPI - detection")
+#         return send_api(url='http://localhost:'+ detection_port +'/detection/execute' , method='POST' , body=file_entity)

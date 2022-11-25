@@ -4,12 +4,15 @@ sys.path.append("C:/Users/eorl6/Documents/golablur")
 import golablur
 sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
 from service import useAPIService
-from delete import *
+from delete_execute import *
 import cv2
 import json
 import base64
+
 app = Flask(__name__)
 
+# input : FileObjectDTO
+# output : FileEntity
 
 @app.route('/delete/execute', methods=['GET','POST'])
 def execute():
@@ -40,6 +43,28 @@ def test(list):
     # print(img_dict)
     # useAPIService.send_api('8884','POST',img_dict)
     return "true"
+
+@app.route('/image/delete/execute', methods=['POST','GET'])
+def image_delete_execute():
+    print('image_delete_execute')
+    req = request.get_json()
+    res = delete_execute.image(req)
+    return jsonify(res)
+
+
+# @app.route('/video/delete/execute', methods=['POST','GET'])
+# def video_delete_execute():
+#     print('video_delete_execute')
+#     req = request.get_json()
+#     res = delete.video(req)
+#     return jsonify(res)
+
+
+# @app.route('/test')
+# def test():
+#     img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
+#     useAPIService.send_api('8884','POST',img.rm_bg())
+#     return str(img.rm_bg())
 
 
 if __name__ == "__main__":
