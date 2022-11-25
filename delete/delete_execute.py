@@ -8,6 +8,7 @@
 
 from ..service.awsS3Service import *
 
+
 class delete_execute:
     
     def image(file_entity, object_entity_list):

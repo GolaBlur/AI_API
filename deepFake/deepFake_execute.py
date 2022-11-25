@@ -1,4 +1,5 @@
 from ..service.awsS3Service import *
+from .deepFake_func import *
 
 class deepFake_execute:
     

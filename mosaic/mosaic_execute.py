@@ -1,4 +1,5 @@
 from ..service.awsS3Service import *
+from .mosaic_func import *
 
 
 
