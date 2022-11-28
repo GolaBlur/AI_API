@@ -15,7 +15,7 @@ def json_default(value):
 def send_api(url , method, body):
     print("send_api")
     
-    
+    response = None
     headers = {'Content-Type' : 'application/json', 'charset' : 'UTF-8', 'Accept' : '*/*'}
     
     data = {}
@@ -36,7 +36,7 @@ def send_api(url , method, body):
         print(ex)
         print("send Exception")
     
-    return response.json()
+    return response
 
 
 # class useImageAPI:

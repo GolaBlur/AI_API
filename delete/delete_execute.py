@@ -5,12 +5,9 @@
 #     def img():
 #         img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
 #         return
-import sys
-sys.path.append("D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API")
-# from AI_API.service import awsS3Service
-from service.awsS3Service import *
-import uuid
-# from ..service.awsS3Service import *
+
+
+from service import *
 
 
 class delete_execute:
