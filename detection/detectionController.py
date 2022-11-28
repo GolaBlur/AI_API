@@ -1,10 +1,9 @@
 from flask import Flask, jsonify, request
-import sys
-sys.path.append("C:/Users/eorl6/Documents/golablur/")
-from yolov5 import detect
-from detection import *
-sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
-from service import useAPIService
+# import sys
+# sys.path.append("D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API\detection")
+# from yolov5 import detect
+# sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
+from detection_execute import *
 
 app = Flask(__name__)
 
@@ -51,12 +50,12 @@ def video_detection_execute():
 
 
 
-@app.route('/test')
-def test():
-    list = ex_detection.objects()
-    print(list)
-    useAPIService.send_api('8881','POST',list)
-    return "true"
+# @app.route('/test')
+# def test():
+#     list = ex_detection.objects()
+#     print(list)
+#     useAPIService.send_api('8881','POST',list)
+#     return "true"
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8883)

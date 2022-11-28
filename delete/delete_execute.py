@@ -5,8 +5,12 @@
 #     def img():
 #         img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
 #         return
-
-from ..service.awsS3Service import *
+import sys
+sys.path.append("D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API")
+# from AI_API.service import awsS3Service
+from service.awsS3Service import *
+import uuid
+# from ..service.awsS3Service import *
 
 
 class delete_execute:
@@ -14,9 +18,9 @@ class delete_execute:
     def image(file_entity, object_entity_list):
         ## s3에서 처리할 파일 다운로드
         file = bring.bring_file_from_s3(file_entity=file_entity)
-        object_list = bring.bring_object_from_s3(object_entity_list=object_entity_list)
+        # object_list = bring.bring_object_from_s3(object_entity_list=object_entity_list)
         ### 객체의 좌표값 추출
-        coordinate = get_object_coordinate(object_entity_list=object_entity_list)
+        # coordinate = get_object_coordinate(object_entity_list=object_entity_list)
         
         ## TODO 기능 수행
         res_file = 'file과 object_list, coordinate를 통해 기능 수행!!'
@@ -27,16 +31,18 @@ class delete_execute:
         ### Test  -  return  FileEntity
         res_file_entity = execute_test(file_entity=file_entity)
         
+        print(res_file_entity)
+        
         return res_file_entity
 
 
 def execute_test(file_entity):
         
     res= {
-        'file_ID' : file_entity['file_ID'],
+        'file_ID' : uuid.uuid4(),
         'user_ID' : file_entity['user_ID'],
         'original_File_ID' : file_entity['file_ID'],
-        'real_File_ID' : file_entity['real_File_ID'],
+        'real_File_Name' : file_entity['real_File_Name'],
         'group_ID' : file_entity['group_ID'],
         'file_Extension' : file_entity['file_Extension'],
         'path' : file_entity['path']
@@ -45,10 +51,10 @@ def execute_test(file_entity):
     return res
 
 
-import sys
-sys.path.append("C:/Users/eorl6/Documents/golablur")
-import golablur
-class ex_delete:
-    def img():
-        img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
-        return
+# import sys
+# sys.path.append("C:/Users/eorl6/Documents/golablur")
+# import golablur
+# class ex_delete:
+#     def img():
+#         img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
+#         return

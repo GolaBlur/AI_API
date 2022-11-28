@@ -7,18 +7,18 @@ app = Flask(__name__)
 # output : FileEntity
 
 
-@app.route('/image/mosaic/execute', metohds=['POST', 'GET'])
+@app.route('/image/mosaic/execute', methods=['POST', 'GET'])
 def image_mosaic_execute():
     print('image_mosaic_execute')
     req = request.get_json()
-    res = mosaic_execute.image(req)
+    res = mosaic_execute.image(file_entity=req['file'], object_entity_list= req['objectList'])
     return res
 
-@app.route('/video/mosaic/execute', metohds=['POST', 'GET'])
+@app.route('/video/mosaic/execute', methods=['POST', 'GET'])
 def video_mosaic_execute():
     print('video_mosaic_execute')
     req = request.get_json()
-    res = mosaic_execute.video(req)
+    res = mosaic_execute.video(file_entity=req['file'], object_entity_list= req['objectList'])
     return res
 
 @app.route('/test')

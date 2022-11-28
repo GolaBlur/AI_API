@@ -1,6 +1,10 @@
+import sys
+sys.path.append("D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API")
+# from AI_API.service import awsS3Service
+from service.awsS3Service import *
+import uuid
 
-from ..service.awsS3Service import *
-
+# from yolov5 import detect
 
 class detection_execute:
     
@@ -17,7 +21,8 @@ class detection_execute:
         ## Test
         object_entity_list = execute_test(file_entity=file_entity)
         print(object_entity_list)
-        
+        ### 로컬 스토리지 초기화
+        # initialization
         return object_entity_list
     
     def video():
@@ -27,32 +32,45 @@ class detection_execute:
 
 ### TODO TEST
 def execute_test(file_entity):
-    object_list = []
-    
-    ## 좌표는 없음
-    object_list[0] = {
-        'object_ID' : 'object_id_1',
+    object_list = [{
+        'object_ID' : uuid.uuid4(),
         'file_ID' : file_entity['file_ID'],
         'user_ID' : file_entity['user_ID'],
         'object_Name' : 'ex',
         'file_Extension' : file_entity['file_Extension'],
         'path' : file_entity['path']
-    }
+    },{
+        'object_ID' : uuid.uuid4(),
+        'file_ID' : file_entity['file_ID'],
+        'user_ID' : file_entity['user_ID'],
+        'object_Name' : 'ex',
+        'file_Extension' : file_entity['file_Extension'],
+        'path' : file_entity['path']
+    },{
+        'object_ID' : uuid.uuid4(),
+        'file_ID' : file_entity['file_ID'],
+        'user_ID' : file_entity['user_ID'],
+        'object_Name' : 'ex',
+        'file_Extension' : file_entity['file_Extension'],
+        'path' : file_entity['path']
+    }]
+    
+    ## 좌표는 없음
     
     return object_list
 
 
 
-class ex_detection:
+# class ex_detection:
 
-    def objects():
-        path = 'C:/Users/eorl6/Documents/golablur/car.jpg'
-        list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
-        print(list)
-        for i in range(len(list)):
-            list[i][0] = names(list[i][0])
-        list.append(path)
-        return list
+#     def objects():
+#         path = 'C:/Users/eorl6/Documents/golablur/car.jpg'
+#         list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
+#         print(list)
+#         for i in range(len(list)):
+#             list[i][0] = names(list[i][0])
+#         list.append(path)
+#         return list
 
 
 

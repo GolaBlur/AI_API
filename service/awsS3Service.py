@@ -2,6 +2,7 @@ import boto3
 from configuration.config import *
 import os
 import uuid
+import shutil
 
 
 ### S3 Connection ###
@@ -85,6 +86,14 @@ def get_object_coordinate(object_entity_list):
     print('hi')
     return
 
+### TODO 로컬 스토리지에서 resources 디렉토리 초기화
+def initialization():
+    ### resources 폴더 삭제
+    shutil.rmtree(r"D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API\resources")
+    ### resources 폴더 생성
+    # os.makedirs('')
+
+
 
 ### S3에 파일 업로드 후 DB에 저장할 형태로 반환
 class store:
@@ -136,7 +145,7 @@ class bring:
         s3_path = file_entity['path']        
         
         ### 저장할 경로 및 파일 명
-        local_path = 'resources/file/download/' + file_name
+        local_path = 'D://ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/resources/file/download/' + file_name
         
         print("before download file")
         
@@ -167,7 +176,7 @@ class bring:
             file_name = set_s3_file_name(object_entity)
             s3_path = object_entity['path']
             ### 저장할 경로 및 파일 명
-            local_path = 'resources/object/download/' + file_name
+            local_path = 'D://ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/resources/object/download/' + file_name
             
             s3.download_file(
                 BUCKET_NAME,
