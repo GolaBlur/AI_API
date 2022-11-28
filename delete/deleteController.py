@@ -24,24 +24,33 @@ def execute():
 def test(list):
     print(list)
     path = list.pop()
-    print(list)
+    # print(list)
     for i in range(len(list)):
-        xtl = list[i][1]
-        ytl = list[i][2]
-        xbr = list[i][3]
-        ybr = list[i][4]
-        img = golablur.Image(xtl, ytl, xbr, ybr,path)
+        xtl = list[i][1]-20
+        ytl = list[i][2]-20
+        xbr = list[i][3]+20
+        ybr = list[i][4]+20
+        img = golablur.Image(xtl, ytl, xbr, ybr,list[i][0],path)
         img.show_box()
         img.rm_bg()
         # img.change_black()
         # cv2.imshow('img',img)
         # cv2.waitKey(delay=0)
-    # print(img.shape)
-    # img_str = str(base64.b64encode(cv2.imencode('.jpg', img)[1]).decode())
-    # img_dict = {'img':img_str}
+    masks = img.mask()
+    # print(masks)
+    # img_str = str(base64.b64encode(cv2.imencode('.jpg', masks[0])[1]).decode())
+    img_dict = {}
     # img_dict = json.dumps(img_dict)
+    for i in range(len(masks)):
+        img_str = str(base64.b64encode(cv2.imencode('.jpg', masks[i])[1]).decode())
+        name = 'img' + str(i)
+        img_dict['img' + str(i)] = str(img_str)
+    img_dict = json.dumps(img_dict)
+    print(img_dict)
+
     # print(img_dict)
-    # useAPIService.send_api('8884','POST',img_dict)
+    # img.change_black(masks)
+    useAPIService.send_api('http://localhost:8884/delete/execute','POST',img_dict)
     return "true"
 
 @app.route('/image/delete/execute', methods=['POST','GET'])

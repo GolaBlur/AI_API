@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 import sys
 sys.path.append("C:/Users/eorl6/Documents/golablur/")
 from yolov5 import detect
-from detection import *
+from detection_execute import *
 sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
 from service import useAPIService
 
@@ -26,7 +26,18 @@ def video_detection_execute():
     res = detection_execute.video(req)
     return jsonify(res)
 
-    
+
+@app.route('/test')
+def test():
+    list = ex_detection.objects()
+    print(list)
+    useAPIService.send_api('http://localhost:8881/delete/execute','POST',list)
+    return "true"
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=8883)
+
+
     # dicc = {}
     # dicc['object_ID']='first_object'
     # dicc['file_ID']='test'
@@ -50,13 +61,3 @@ def video_detection_execute():
 #     return result
 
 
-
-@app.route('/test')
-def test():
-    list = ex_detection.objects()
-    print(list)
-    useAPIService.send_api('8881','POST',list)
-    return "true"
-
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8883)

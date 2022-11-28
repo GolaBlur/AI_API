@@ -6,7 +6,7 @@
 #         img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
 #         return
 
-from ..service.awsS3Service import *
+from service import *
 
 
 class delete_execute:
