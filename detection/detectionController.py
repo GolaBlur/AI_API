@@ -15,10 +15,6 @@ from service import useAPIService
 
 app = Flask(__name__)
 
-# input : FileEntity
-# output : List<ObjectEntity>
-
-
 @app.route('/image/detection/execute', methods=['POST','GET'])
 def image_detection_execute():
     print('image_detection_execute')
@@ -36,9 +32,9 @@ def video_detection_execute():
 
 @app.route('/test')
 def test():
-    list = ex_detection.objects()
-    print(list)
-    useAPIService.send_api('http://localhost:8881/delete/execute','POST',list)
+    tests = objects('C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/rc-upload-1669657545782-2.jpg')
+    print(tests)
+    print("==================================")
     return "true"
 
 if __name__ == "__main__":
@@ -79,4 +75,3 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8883)
-

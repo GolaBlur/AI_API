@@ -1,12 +1,7 @@
-
 import sys
-sys.path.append("D:\ImmersionProject\FinalProject\GolaBlur\API-AI\AI_API")
-# from AI_API.service import awsS3Service
+sys.path.append("C:/Users/eorl6/Documents/golablur/AI_API")
+from service import useAPIService
 from service.awsS3Service import *
-import uuid
-
-# from yolov5 import detect
-from AI_API.service import *
 
 from yolov5 import detect
 
@@ -15,18 +10,18 @@ class detection_execute:
     def image(file_entity):
         ## s3에서 처리할 파일 다운로드
         file = bring.bring_file_from_s3(file_entity=file_entity)
-        
+        print("========================================================================")
+        print(file.name)
         ## TODO 기능 수행
-        object_list = '기능수행!'
+        object_list = objects(file.name)
         
         ## s3에 탐지된 객체 업로드
-        # object_entity_list = change_object_to_entity_and_store_at_s3(object_list=object_list, file_entity=file_entity)
+        object_entity_list = change_object_to_entity_and_store_at_s3(object_list=object_list, file_entity=file_entity)
         
         ## Test
-        object_entity_list = execute_test(file_entity=file_entity)
-        print(object_entity_list)
-        ### 로컬 스토리지 초기화
-        # initialization
+        # object_entity_list = execute_test(file_entity=file_entity)
+        # print(object_entity_list)
+
         return object_entity_list
     
     def video():
@@ -149,12 +144,29 @@ def names(num):
     }
     return str(names[num])
 
-    def objects():
-        path = 'C:/Users/eorl6/Documents/golablur/04.jpg'
-        list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
-        print(list)
-        for i in range(len(list)):
-            list[i][0] = names(list[i][0])
-        list.append(path)
-        return list
-
+def objects(path):
+    # path = 'C:/Users/eorl6/Documents/golablur/04.jpg'
+    # path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/'
+    list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
+    list.append(path)
+    print(list)
+    lists = []
+    stickers = useAPIService.send_api('http://localhost:8881/delete/execute',
+    
+    'POST',list)
+    # print(stickers.json())
+    print("=============================")
+    print(list)
+    for i in range(len(list)-1):
+        print(i)
+        dict = {}
+        list[i][0] = names(list[i][0])
+        dict["object_Path"] = stickers.json()[i]
+        dict["object_Name"] = list[i][0]
+        dict["xtl"] = list[i][1]
+        dict["ytl"] = list[i][2]
+        dict["xbr"] = list[i][3]
+        dict["ybr"] = list[i][4]
+        lists.append(dict)
+    print(lists)
+    return lists
