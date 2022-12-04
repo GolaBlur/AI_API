@@ -6,3 +6,4 @@ class diffusion:
         model = inpaint.Image(mask)
         model.load()
         return "good"
+

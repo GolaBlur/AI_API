@@ -12,17 +12,22 @@ app = Flask(__name__)
 def execute():
     print("받음")
     file_and_object_list = request.get_json()
-    file_and_object_list = base64.b64decode(file_and_object_list[9:-1])
-    jpg_arr = np.frombuffer(file_and_object_list, dtype=np.uint8)
-    img = cv2.imdecode(jpg_arr, cv2.COLOR_BGR2GRAY)
-    # cv2.imshow('img',img)
-    # cv2.waitKey(delay=0)
-    rgb = np.array(img, dtype=np.uint8)
-    rgb = np.where(rgb == 255, 1 , 0)
-    rgb = np.array(rgb, dtype=np.uint8)
-    print(rgb.shape)
-    model = background.diffusion()
-    model.img(rgb)
+    list = file_and_object_list.split(',')
+    for i in range(len(list)):
+        str = list[i]
+        file = base64.b64decode(str[9:-1])
+        jpg_arr = np.frombuffer(file, dtype=np.uint8)
+        img = cv2.imdecode(jpg_arr, cv2.COLOR_BGR2GRAY)
+        cv2.imshow("img",img)
+        cv2.waitKey(delay=0)
+        rgb = np.array(img, dtype=np.uint8)
+        rgb = np.where(rgb == 255, 1 , 0)
+        rgb = np.array(rgb, dtype=np.uint8)
+        print(rgb.shape)
+        model = background.diffusion()
+        model.img(rgb)
+
+
     return "good"
 
 @app.route('/test')
