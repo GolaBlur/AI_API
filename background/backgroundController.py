@@ -11,21 +11,36 @@ app = Flask(__name__)
 @app.route('/delete/execute', methods=['GET','POST'])
 def execute():
     print("받음")
-    file_and_object_list = request.get_json()
-    list = file_and_object_list.split(',')
-    for i in range(len(list)):
-        str = list[i]
-        file = base64.b64decode(str[9:-1])
-        jpg_arr = np.frombuffer(file, dtype=np.uint8)
-        img = cv2.imdecode(jpg_arr, cv2.COLOR_BGR2GRAY)
-        cv2.imshow("img",img)
-        cv2.waitKey(delay=0)
-        rgb = np.array(img, dtype=np.uint8)
-        rgb = np.where(rgb == 255, 1 , 0)
-        rgb = np.array(rgb, dtype=np.uint8)
-        print(rgb.shape)
-        model = background.diffusion()
-        model.img(rgb)
+    # file_and_object_list = request.get_json()
+    # print(file_and_object_list)
+    # list = file_and_object_list.split(',')
+    img = None
+    mask = None
+    img_list = []
+    # for i in range(len(list)):
+    #     str = list[i]
+    #     str = str.replace('"','')
+    #     str = str.replace('}','')
+    #     print(str[7:])
+    #     file = base64.b64decode(str[7:])
+    #     jpg_arr = np.frombuffer(file, dtype=np.uint8)
+    #     if i ==1:
+    #         img = cv2.imdecode(jpg_arr,0)
+    #         print(img.shape)
+    #     else:
+    #         img = cv2.imdecode(jpg_arr,cv2.IMREAD_COLOR)
+
+    #     unique, counts = np.unique(img, return_counts=True)
+    #     print(dict(zip(unique, counts)))
+        
+    #     img_list.append(img)
+
+        # rgb = np.array(img, dtype=np.uint8)
+        # rgb = np.where(rgb == 255, 1 , 0)
+        # rgb = np.array(rgb, dtype=np.uint8)
+    img_list = ['C:/Users/eorl6/Documents/golablur/AI_API/resources/diffusion/mask/MASK1234.png','C:/Users/eorl6/Documents/golablur/AI_API/resources/diffusion/original/ORIGINAL1.png']
+    model = background.diffusion()
+    model.img(img_list)
 
 
     return "good"

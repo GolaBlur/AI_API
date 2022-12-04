@@ -8,6 +8,8 @@ from delete_execute import *
 import cv2
 import json
 import base64
+import numpy as np
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -17,64 +19,81 @@ app = Flask(__name__)
 @app.route('/delete/execute', methods=['GET','POST'])
 def execute():
     list = request.get_json()
-    test(list)
-    return "isee"
+    obj_list = test(list)
+    print("요청받고 보냄")
+    return jsonify(obj_list)
 
 @app.route('/test')
 def test(list):
     print(list)
     path = list.pop()
+    print(list)
     # print(list)
+    obj_path = []
     for i in range(len(list)):
-        xtl = list[i][1]-20
-        ytl = list[i][2]-20
-        xbr = list[i][3]+20
-        ybr = list[i][4]+20
+        xtl = list[i][1]
+        ytl = list[i][2]
+        xbr = list[i][3]
+        ybr = list[i][4]
         img = golablur.Image(xtl, ytl, xbr, ybr,list[i][0],path)
         img.show_box()
-        img.rm_bg()
-        # img.change_black()
-        # cv2.imshow('img',img)
-        # cv2.waitKey(delay=0)
+        obj_path.append(img.rm_bg())
+    print(obj_path)
     masks = img.mask()
-    # print(masks)
-    # img_str = str(base64.b64encode(cv2.imencode('.jpg', masks[0])[1]).decode())
-    img_dict = {}
-    # img_dict = json.dumps(img_dict)
-    for i in range(len(masks)):
-        img_str = str(base64.b64encode(cv2.imencode('.jpg', masks[i])[1]).decode())
-        name = 'img' + str(i)
-        img_dict['img' + str(i)] = str(img_str)
-    img_dict = json.dumps(img_dict)
-    print(img_dict)
 
+    # img_dict = {}
+
+    # for i in range(len(masks)):
+    #     img_str = str(base64.b64encode(cv2.imencode('.jpg', masks[i])[1]).decode())
+    #     name = 'img' + str(i)
+    #     img_dict['img' + str(i)] = str(img_str)
+    # img_dict = json.dumps(img_dict)
     # print(img_dict)
-    # img.change_black(masks)
-    useAPIService.send_api('http://localhost:8884/delete/execute','POST',img_dict)
+
+    # useAPIService.send_api('http://localhost:8884/delete/execute','POST',img_dict)
+    return obj_path
+
+@app.route('/model/test')
+def model_test():
+    img = golablur.Image(263,206,409,445,'obj','C:/Users/eorl6/Documents/golablur/original.png')
+    img.m_path = 'C:/Users/eorl6/Documents/golablur/sticker.png'
+
+    img_dict = {}
+    list = img.change_black()
+
+    unique, counts = np.unique(list[0], return_counts=True)
+    print(dict(zip(unique, counts)))
+    unique, counts = np.unique(list[1], return_counts=True)
+    print(dict(zip(unique, counts)))
+    print("===================================================")
+    cv2.imwrite('ORIGINAL11111111111.png',list[0])
+    cv2.imwrite('MASK12311111111111.png',list[1])
+    mask = cv2.imread('MASK12311111111111.png')
+    img = cv2.imread('ORIGINAL11111111111.png')
+    b,g,r = cv2.split(mask)
+    mask = cv2.merge([b,g,r])
+    unique, counts = np.unique(mask, return_counts=True)
+    print(dict(zip(unique, counts)))
+    unique, counts = np.unique(img, return_counts=True)
+    print(dict(zip(unique, counts)))
+
+
+    # for i in range(len(list)):
+    #     img_str = str(base64.b64encode(cv2.imencode('.jpg', list[i])[1]).decode())
+    #     name = 'img' + str(i)
+    #     img_dict['img' + str(i)] = str(img_str)
+    # img_dict = json.dumps(img_dict)
+
+    # useAPIService.send_api('http://localhost:8884/delete/execute','POST',jsonify('ORIGINAL.png'))
     return "true"
 
 @app.route('/image/delete/execute', methods=['POST','GET'])
 def image_delete_execute():
     print('image_delete_execute')
     req = request.get_json()
-    res = delete_execute.image(req)
+    print(req)
+    res = delete_execute.image(req['file'],req['objectList'])
     return jsonify(res)
-
-
-# @app.route('/video/delete/execute', methods=['POST','GET'])
-# def video_delete_execute():
-#     print('video_delete_execute')
-#     req = request.get_json()
-#     res = delete.video(req)
-#     return jsonify(res)
-
-
-# @app.route('/test')
-# def test():
-#     img = golablur.Image(381,158,381,29,'C:/Users/eorl6/Documents/golablur/car.jpg')
-#     useAPIService.send_api('8884','POST',img.rm_bg())
-#     return str(img.rm_bg())
-
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8881)

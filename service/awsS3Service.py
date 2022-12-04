@@ -34,16 +34,16 @@ def bring_file_object_process(entity_of_file_and_object):
 ### FileEntity 형식으로 파일 정보를 추출
 def change_file_to_file_entity(file, original_file_entity):
     file_entity = {}
-    
-    file_entity['file_ID'] = uuid.uuid4()
+    print(file)
+    file_entity['file_ID'] = str(uuid.uuid4())
     file_entity['user_ID'] = original_file_entity['user_ID']
     file_entity['original_File_ID'] = original_file_entity['file_ID']
     file_entity['real_File_Name'] = original_file_entity['real_File_Name']
     file_entity['group_ID'] = original_file_entity['group_ID']
-    file_entity['file_Extension'] = os.path.splitext(file.name)[1]
-    file_entity['path'] = original_file_entity['Path'][len(original_file_entity['path'])
+    file_entity['file_Extension'] = os.path.splitext(file)[1]
+    file_entity['path'] = original_file_entity['path'][:len(original_file_entity['path'])
                                                     -len(original_file_entity['file_ID'] + original_file_entity['file_Extension'])
-                                                    :] + 'result/' + file_entity.get('file_ID') + file_entity.get('file_Extension')
+                                                    ] + 'result/' + file_entity.get('file_ID') + '.png'
     
     return file_entity
 
@@ -53,13 +53,18 @@ def change_object_to_object_entity(object_list, file_entity):
     for object_file in object_list:
         object_entity = {}
         
-        object_entity['object_ID'] = uuid.uuid4()
-        object_entity['original_File_ID'] = file_entity['original_File_ID']
+        object_entity['object_ID'] = str(uuid.uuid4())
+        object_entity['file_ID'] = file_entity['file_ID']
         object_entity['user_ID'] = file_entity['user_ID']
-        object_entity['file_Extension'] = os.path.splitext(object_file.name)[1]
+        object_entity['file_Extension'] = os.path.splitext(object_file.get('object_Path'))[1]
         object_entity['path'] = file_entity['path'][len(file_entity['path'])
                                                     -len(file_entity['file_ID'] + file_entity['file_Extension'])
-                                                    :] + 'object/' +object_entity.get('object_ID') + object_extension
+                                                    :] + 'object/' +object_entity.get('object_ID') + '.png'
+        object_entity['object_Name'] = object_file.get('object_Name')
+        object_entity['xtl'] = object_file.get('xtl')
+        object_entity['xbr'] = object_file.get('xbr')
+        object_entity['ytl'] = object_file.get('ytl')
+        object_entity['ybr'] = object_file.get('ybr')
         
         object_entity_list.append(object_entity)
     return object_entity_list
@@ -77,13 +82,27 @@ def change_object_to_entity_and_store_at_s3(object_list, file_entity):
     ### 객체 파일 리스트를 entity 형태로 변환
     object_entity_list = change_object_to_object_entity(object_list=object_list, file_entity=file_entity)
     ### S3에 업로드
-    store.store_object_at_s3(object_list=object_list, object_entity_list=object_entity_list)
+    object_file_list = []
+    for object_ in object_list:
+        print(object_.get('object_Path'))
+        print("===================================================")
+        object_file = open(object_.get('object_Path'),"rb") #,encoding='여기가아니야 시발'
+        object_file_list.append(object_file)
+    store.store_object_at_s3(object_list=object_file_list, object_entity_list=object_entity_list)
     return object_entity_list
 
 ### 객체 파일의 좌표 생성
 def get_object_coordinate(object_entity_list):
-    print('hi')
-    return
+    object_coordinate_list = []
+    for object_entity in object_entity_list:
+        object_coordinate = {
+            'xtl' : object_entity['xtl'],
+            'xbr' : object_entity['xbr'],
+            'ytl' : object_entity['ytl'],
+            'ybr' : object_entity['ybr']
+        }
+        object_coordinate_list.append(object_coordinate)
+    return object_coordinate_list
 
 
 ### S3에 파일 업로드 후 DB에 저장할 형태로 반환
@@ -111,7 +130,7 @@ class store:
         s3 = s3_connection()
         
         ### s3 업로드
-        for i in range(object_list):
+        for i in range(len(object_list)):
             object_file = object_list[i]
             object_entity = object_entity_list[i]
             
@@ -136,7 +155,7 @@ class bring:
         s3_path = file_entity['path']        
         
         ### 저장할 경로 및 파일 명
-        local_path = 'resources/file/download/' + file_name
+        local_path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/' + file_name
         
         print("before download file")
         
@@ -167,7 +186,7 @@ class bring:
             file_name = set_s3_file_name(object_entity)
             s3_path = object_entity['path']
             ### 저장할 경로 및 파일 명
-            local_path = 'resources/object/download/' + file_name
+            local_path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/object/download/' + file_name
             
             s3.download_file(
                 BUCKET_NAME,
@@ -175,7 +194,7 @@ class bring:
                 local_path
             )
             
-            object_file_list.append(open('local_path','rb'))
+            object_file_list.append(open(local_path,'rb'))
         
         return object_file_list
 
