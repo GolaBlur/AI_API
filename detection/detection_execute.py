@@ -8,12 +8,15 @@ class detection_execute:
     
     def image(file_entity):
         ## s3에서 처리할 파일 다운로드
+        print('- detection image')
         file = bring.bring_file_from_s3(file_entity=file_entity)
-        print("========================================================================")
+        # print("========================================================================")
+        # print(file.name)
+        ## TODO 기능 수행        
+        print("========detection요청===============")
         print(file.name)
-        ## TODO 기능 수행
         object_list = objects(file.name)
-        
+
         ## s3에 탐지된 객체 업로드
         object_entity_list = change_object_to_entity_and_store_at_s3(object_list=object_list, file_entity=file_entity)
         
@@ -131,20 +134,17 @@ def names(num):
     return str(names[num])
 
 def objects(path):
-    # path = 'C:/Users/eorl6/Documents/golablur/04.jpg'
-    # path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/'
+    print('- objects')
     list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
     list.append(path)
-    print(list)
+    # print(list)
     lists = []
-    stickers = useAPIService.send_api('http://localhost:8881/delete/execute',
-    
-    'POST',list)
+    stickers = useAPIService.send_api('http://localhost:8881/delete/execute','POST',list)
     # print(stickers.json())
-    print("=============================")
-    print(list)
+    # print("=============================")
+    # print(list)
     for i in range(len(list)-1):
-        print(i)
+        # print(i)
         dict = {}
         list[i][0] = names(list[i][0])
         dict["object_Path"] = stickers.json()[i]
@@ -154,5 +154,5 @@ def objects(path):
         dict["xbr"] = list[i][3]
         dict["ybr"] = list[i][4]
         lists.append(dict)
-    print(lists)
+    # print(lists)
     return lists

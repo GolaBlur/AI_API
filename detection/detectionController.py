@@ -26,8 +26,8 @@ def video_detection_execute():
 @app.route('/test')
 def test():
     tests = objects('C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/rc-upload-1669657545782-2.jpg')
-    print(tests)
-    print("==================================")
+    # print(tests)
+    # print("==================================")
     return "true"
 
 if __name__ == "__main__":
