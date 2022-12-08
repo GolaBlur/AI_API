@@ -30,8 +30,8 @@ def send_api(url , method, body):
             # print(data)
             # data = np.frombuffer(data, dtype=np.uint8)
             response = requests.post(url, data=data, headers=headers)
-        print("response status %r" %response.status_code)
-        print("response json %r" %response.json())
+        print("send api -> response status %r" %response.status_code)
+        # print("response json %r" %response.json())
     except Exception as ex:
         print(ex)
         print("send Exception")

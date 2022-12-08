@@ -4,7 +4,16 @@ import os
 import uuid
 import shutil
 
+### Mask 파일의 경로 설정
+def get_mask_path(object_entity):
+    path = object_entity['path'][:len(object_entity['path'])-len('.png')] + '_mask.png'
+    return path
 
+### Mask 파일 S3 업로드
+def use_mask_path_store_mask_at_s3(mask_path,object_entity):
+    mask = open(mask_path)
+    store.store_object_mask_at_s3(mask=mask, object_entity=object_entity)
+    
 ### S3 Connection ###
 def s3_connection():
     print("s3_connection")
@@ -33,15 +42,15 @@ def bring_file_object_process(entity_of_file_and_object):
 
 
 ### FileEntity 형식으로 파일 정보를 추출
-def change_file_to_file_entity(file, original_file_entity):
+def change_file_to_file_entity(original_file_entity):
     file_entity = {}
-    print(file)
+    
     file_entity['file_ID'] = str(uuid.uuid4())
     file_entity['user_ID'] = original_file_entity['user_ID']
     file_entity['original_File_ID'] = original_file_entity['file_ID']
     file_entity['real_File_Name'] = original_file_entity['real_File_Name']
     file_entity['group_ID'] = original_file_entity['group_ID']
-    file_entity['file_Extension'] = os.path.splitext(file)[1]
+    file_entity['file_Extension'] = '.png'
     file_entity['path'] = original_file_entity['path'][:len(original_file_entity['path'])
                                                     -len(original_file_entity['file_ID'] + original_file_entity['file_Extension'])
                                                     ] + 'result/' + file_entity.get('file_ID') + '.png'
@@ -58,9 +67,9 @@ def change_object_to_object_entity(object_list, file_entity):
         object_entity['file_ID'] = file_entity['file_ID']
         object_entity['user_ID'] = file_entity['user_ID']
         object_entity['file_Extension'] = os.path.splitext(object_file.get('object_Path'))[1]
-        object_entity['path'] = file_entity['path'][len(file_entity['path'])
+        object_entity['path'] = file_entity['path'][:len(file_entity['path'])
                                                     -len(file_entity['file_ID'] + file_entity['file_Extension'])
-                                                    :] + 'object/' +object_entity.get('object_ID') + '.png'
+                                                    ] + 'object/' +object_entity.get('object_ID') + '/'+object_entity.get('object_ID')+'.png'
         object_entity['object_Name'] = object_file.get('object_Name')
         object_entity['xtl'] = object_file.get('xtl')
         object_entity['xbr'] = object_file.get('xbr')
@@ -73,7 +82,7 @@ def change_object_to_object_entity(object_list, file_entity):
 ### 파일 형태를 entity 형태로 변환시킨 후 s3에 업로드
 def change_file_to_entity_and_store_at_s3(file, original_file_entity):
     ### 파일 형태를 entity 형태로 변환
-    file_entity = change_file_to_file_entity(file= file, original_file_entity= original_file_entity)
+    file_entity = change_file_to_file_entity(original_file_entity= original_file_entity)
     ### S3에 업로드
     store.store_file_at_s3(file=file, file_entity=file_entity)
     return file_entity
@@ -85,8 +94,8 @@ def change_object_to_entity_and_store_at_s3(object_list, file_entity):
     ### S3에 업로드
     object_file_list = []
     for object_ in object_list:
-        print(object_.get('object_Path'))
-        print("===================================================")
+        # print(object_.get('object_Path'))
+        # print("===================================================")
         object_file = open(object_.get('object_Path'),"rb") #,encoding='여기가아니야 시발'
         object_file_list.append(object_file)
     store.store_object_at_s3(object_list=object_file_list, object_entity_list=object_entity_list)
@@ -150,7 +159,21 @@ class store:
                 ACL = 'public-read'
             )
             
-
+    def store_object_mask_at_s3(mask, object_entity):
+        print("store_object_mask_at_s3")
+        
+        s3 = s3_connection()
+        
+        ### 저장 경로 {user_ID}/{file_ID}/object/{object_ID}/{object_ID}_mask.png
+        mask_path = get_mask_path(object_entity=object_entity)
+        
+        ### s3 업로드
+        s3.put_object(
+            Bucket = BUCKET_NAME,
+            Body = mask,
+            Key = mask_path,
+            ACL = 'public-read'
+        )
 
 class bring:
     
@@ -167,18 +190,18 @@ class bring:
 
         local_path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/file/download/' + file_name
         
-        print("before download file")
+        # print("before download file")
         
-        print("file_name : " + file_name)
-        print("s3_path : " + s3_path)
-        print("local_path : " + local_path)
+        # print("file_name : " + file_name)
+        # print("s3_path : " + s3_path)
+        # print("local_path : " + local_path)
         
         s3.download_file(
             BUCKET_NAME,
             s3_path,
             local_path
         )
-        print("after download file")
+        # print("after download file")
         
         return open(local_path, 'rb')
     
@@ -208,6 +231,26 @@ class bring:
             object_file_list.append(open(local_path,'rb'))
         
         return object_file_list
+
+    def bring_mask_from_s3(object_entity):
+        print("bring_mask_from_s3")
+        
+        s3 = s3_connection()
+        
+        s3_path = get_mask_path(object_entity=object_entity)
+        
+        ### 저장할 로컬 경로
+        local_path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/diffusion/mask/' + object_entity['object_ID'] + '/' + 'mask.png'
+        
+        
+        s3.download_file(
+            BUCKET_NAME,
+            s3_path,
+            local_path
+        )
+        
+        ## 경로  - 파일이 필요하면 open 함수 사용
+        return local_path
 
 
 
