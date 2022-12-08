@@ -13,3 +13,5 @@ __pycache__
 ### 딥페이크 모델
 MobileFaceSwap/
 
+/deepFake/data
+/deepFake/results
