@@ -84,8 +84,8 @@ def execute_test(file_entity):
 
 def image_func_test():
     
-    target_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/target_img.jpg'
-    source_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/source_img.png'
+    target_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/data/target_img.jpg'
+    source_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/data/source_img.png'
     
     res = deepFake_image_func(target_file_path, source_file_path)
     
@@ -95,8 +95,8 @@ def image_func_test():
 
 def video_func_test():
     
-    target_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/target_img.jpg'
-    source_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/source_video.mp4'
+    target_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/data/target_img.jpg'
+    source_file_path = 'D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API/deepFake/data/source_video.mp4'
     
     res = deepFake_video_func(target_file_path, source_file_path)
     
