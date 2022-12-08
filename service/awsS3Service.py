@@ -1,4 +1,6 @@
 import boto3
+# import sys
+# sys.path.append("D:/ImmersionProject/FinalProject/GolaBlur/API-AI/AI_API")
 from configuration.config import *
 import os
 import uuid

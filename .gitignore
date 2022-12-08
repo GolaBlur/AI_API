@@ -1,4 +1,4 @@
-### config
+
 /configuration
 
 ### pycache
@@ -7,4 +7,9 @@ __pycache__
 ### resource
 /resources
 
-#
+### vscode
+.vscode/
+
+### 딥페이크 모델
+MobileFaceSwap/
+
