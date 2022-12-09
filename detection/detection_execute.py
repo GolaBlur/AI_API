@@ -136,7 +136,11 @@ def names(num):
 def objects(path):
     print('- objects')
     list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
-    list.append(path)
+    if list is not None:
+        list.append(path)
+    else:
+        return {"object_Path":"None",
+                "object_Name":"None"}
     # print(list)
     lists = []
     stickers = useAPIService.send_api('http://localhost:8881/delete/execute','POST',list)
@@ -146,7 +150,8 @@ def objects(path):
     for i in range(len(list)-1):
         # print(i)
         dict = {}
-        list[i][0] = names(list[i][0])
+        if list[i][0] is not None:
+            list[i][0] = names(list[i][0])
         dict["object_Path"] = stickers.json()[i]
         dict["object_Name"] = list[i][0]
         dict["xtl"] = list[i][1]
