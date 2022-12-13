@@ -20,7 +20,13 @@ def s3_connection():
                           aws_access_key_id = AWS_ACCESS_KEY,
                           aws_secret_access_key = AWS_SECRET_KEY)
     return s3_bucket
-
+    
+### object 하나만 s3에서 다운로드
+def bring_one_object(object_entity):
+    object_entity_list = []
+    object_entity_list.append(object_entity)
+    objects = bring.bring_object_from_s3(object_entity_list=object_entity_list)
+    return objects[0]
 
 def set_s3_file_name(entity):
     return entity['file_ID'] + entity['file_Extension']
@@ -125,13 +131,15 @@ class store:
         ### 다운로드할 파일의 s3에서의 경로
         file_name = set_s3_file_name(entity= file_entity)
         path = file_entity['path']
-        
+        print("file_entity=======================================")
+        print(file_entity)
         s3.put_object(
             Bucket = BUCKET_NAME,
             Body = file,
             Key = path,
             ACL = 'public-read'
         )
+        
     
     def store_object_at_s3(object_entity_list, object_list):
         print("store_object_at_s3")
@@ -206,7 +214,7 @@ class bring:
         ### for each  문을 통해 list 내의 객체들을 다운로드 후 리스트에 추가하여 반환
         for object_entity in object_entity_list:
             ### 가져올 파일의 경로   
-            file_name = set_s3_file_name(object_entity)
+            file_name = object_entity['object_ID'] + object_entity['file_Extension']
             s3_path = object_entity['path']
             ### 저장할 경로 및 파일 명
             local_path = 'C:/Users/eorl6/Documents/golablur/AI_API/resources/object/download/' + file_name

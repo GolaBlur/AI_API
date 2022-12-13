@@ -15,10 +15,12 @@ class detection_execute:
         ## TODO 기능 수행        
         print("========detection요청===============")
         print(file.name)
-        object_list = objects(file.name)
+        object_list, mask_list = objects(file.name)
 
         ## s3에 탐지된 객체 업로드
         object_entity_list = change_object_to_entity_and_store_at_s3(object_list=object_list, file_entity=file_entity)
+        for i in range(len(mask_list)):
+            store.store_object_mask_at_s3(mask=open(mask_list[i],'rb'), object_entity=object_entity_list[i])
         
         ## Test
         # object_entity_list = execute_test(file_entity=file_entity)
@@ -135,7 +137,12 @@ def names(num):
 
 def objects(path):
     print('- objects')
-    list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
+    if path[len(path)-4:] == 'mp4':
+        list = detect.run(source=path,weights='yolov5n6.pt')
+        print("=================동영상에 있는 객체들 ==========================================")
+        print(list)
+    else:
+        list = detect.run(source=path,weights='yolov5n6.pt', save_txt=True)
     if list is not None:
         list.append(path)
     else:
@@ -144,20 +151,28 @@ def objects(path):
     # print(list)
     lists = []
     stickers = useAPIService.send_api('http://localhost:8881/delete/execute','POST',list)
-    # print(stickers.json())
-    # print("=============================")
-    # print(list)
+
+    masks = []
+    print("=====================stickers==========================")
+    print(stickers)
     for i in range(len(list)-1):
-        # print(i)
+        print((0 if i == 0 else (i if i%2 == 0 else i+1)))
         dict = {}
         if list[i][0] is not None:
             list[i][0] = names(list[i][0])
-        dict["object_Path"] = stickers.json()[i]
+        dict["object_Path"] = stickers.json()[(0 if i == 0 else (i if i%2 == 0 else i+1))]
         dict["object_Name"] = list[i][0]
         dict["xtl"] = list[i][1]
         dict["ytl"] = list[i][2]
         dict["xbr"] = list[i][3]
         dict["ybr"] = list[i][4]
         lists.append(dict)
+        masks.append(stickers.json()[(1 if i == 0 else (i+1 if i%2 == 0 else i))])
+
     # print(lists)
-    return lists
+    return lists, masks
+
+def masks(masks):
+    file = None
+    for mask in masks:
+        file = open(mask,"rb")

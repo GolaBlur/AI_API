@@ -24,7 +24,11 @@ class delete_execute:
         # print("object_list:",object_list)
         # print("coordinate:",coordinate)
         ## TODO 기능 수행
-        res_file_entity = delete_object(file.name,object_list[0].name,coordinate[0],file_entity)
+        mask_list = []
+        for mask in object_list:
+            mask_list.append(mask.name)
+        print(mask_list)
+        res_file_entity = delete_object(file.name,mask_list,coordinate[0],file_entity)
         
         ## s3에 처리된 파일 업로드
         # res_file_entity = change_file_to_entity_and_store_at_s3(file=res_file, original_file_entity=file_entity)
@@ -54,32 +58,43 @@ def delete_object(file_path, mask_path, xyxy,entity):
 
     img = golablur.Image(int(xyxy['xtl']),int(xyxy['ytl']),int(xyxy['xbr']),int(xyxy['ybr']),'obj',file_path)
     img.m_path = mask_path
+    print("===================mask path 받음================")
+    print(mask_path)
 
-    img_dict = {}
-    lista = img.change_black()
+    mask = cv2.imread(mask_path[0])
+    if 1 < len(mask_path):
+        for i in range(len(mask_path)):
 
-    # print("===================================================")
-    cv2.imwrite('ORIGINAL.png',lista[0])
-    cv2.imwrite('MASK.png',lista[1])
-    mask = cv2.imread('MASK.png')
-    img = cv2.imread('ORIGINAL.png')
-    # b,g,r = cv2.split(mask)
-    # unique, counts = np.unique(b, return_counts=True)
-    # print(list(zip(unique, counts)))
-    # mask = cv2.merge([b,g,r])
+            img = cv2.imread(mask_path[i+1])
+
+            unique, counts = np.unique(mask, return_counts=True)
+            print(dict(zip(unique, counts)))
+            unique, counts = np.unique(img, return_counts=True)
+            print(dict(zip(unique, counts)))
+
+            mask = cv2.multiply(mask,img)
+
+            cv2.imshow('mask.png',mask)
+            cv2.waitKey(0)
+            
+
+    # lista, mask_path = img.change_black()
+    original = cv2.imread(img.path)
+    original = cv2.multiply(original,mask)
+    cv2.imshow('ORIGINAL.png',original)
+    cv2.waitKey(0)
+
+    cv2.imwrite('ORIGINAL.png',original)
+    cv2.imwrite('mask.png',mask)
+
 
     path = 'C:/Users/eorl6/Documents/golablur/AI_API/delete/'
     original = path+'ORIGINAL.png'
-    mask = path+'MASK.png'
+    mask = path+'mask.png'
     dict = {
         'original':original,
         'mask':mask,
         'entity':entity
     }
-    # for i in range(len(list)):
-    #     img_str = str(base64.b64encode(cv2.imencode('.jpg', list[i])[1]).decode())
-    #     name = 'img' + str(i)
-    #     img_dict['img' + str(i)] = str(img_str)
-    # img_dict = json.dumps(img_dict)
 
-    return useAPIService.send_api('http://localhost:8884/delete/execute','POST',dict)
+    # return useAPIService.send_api('http://localhost:8884/delete/execute','POST',dict)

@@ -17,7 +17,6 @@ def execute():
     mask = file_and_object_list['mask']
     entity = file_and_object_list['entity']
     print(entity)
-    img_list = []
     img_list = [img,mask]
 
     result = model(img_list)
@@ -30,6 +29,5 @@ def execute():
 def test():
     return '200'
 
-
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8884)
+    app.run(debug=True, host='0.0.0.0', port=8884, threaded=True)
