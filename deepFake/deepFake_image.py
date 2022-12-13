@@ -11,6 +11,8 @@ from MobileFaceSwap.utils.align_face import back_matrix, dealign, align_img
 from MobileFaceSwap.utils.util import paddle2cv, cv2paddle
 from MobileFaceSwap.utils.prepare_data import LandmarkModel
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
+import uuid
+
 
 def get_id_emb(id_net, id_img_path):
     id_img = cv2.imread(id_img_path)
@@ -63,9 +65,11 @@ def image_test(args):
             back_matrix = np.load(base_path + '_back.npy')
             mask = np.transpose(mask[0].numpy(), (1, 2, 0))
             res = dealign(res, origin_att_img, back_matrix, mask)
-        cv2.imwrite(os.path.join(args.output_dir, os.path.basename(img_path)), res)
+        res_file_name = str(uuid.uuid4())+'.jpg'
+        res_file_path = os.path.join(args.output_dir, res_file_name)
+        cv2.imwrite(res_file_path, res)
     
-    return res
+    return res_file_path
 
 
 def face_align(landmarkModel, image_path, merge_result=False, image_size=224):
@@ -83,9 +87,10 @@ def face_align(landmarkModel, image_path, merge_result=False, image_size=224):
             cv2.imwrite(base_path + '_aligned.png', aligned_img)
             if merge_result:
                 np.save(base_path + '_back.npy', back_matrix)
+            return "200"
+        else:
+            return None
 
-
-from argparse import Namespace
 
 def deepFake_image_func(source_img_path, target_img_path,
              output_dir = 'results',
@@ -105,8 +110,12 @@ def deepFake_image_func(source_img_path, target_img_path,
         landmarkModel = LandmarkModel(name='landmarks')
         print("after landmarkModel")
         landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(640,640))
-        face_align(landmarkModel, source_img_path)
-        face_align(landmarkModel, target_img_path, merge_result, image_size)
+        isFace = face_align(landmarkModel, source_img_path)
+        if isFace is None:
+            return None
+        isFace = face_align(landmarkModel, target_img_path, merge_result, image_size)
+        if isFace is None:
+            return None
     os.makedirs(output_dir, exist_ok=True)
     
     ### 딥페이크 처리를 위해 dict 형식으로 변환

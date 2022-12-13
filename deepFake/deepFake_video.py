@@ -54,8 +54,10 @@ def video_test(args):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     cap = cv2.VideoCapture()
     cap.open(args.target_video_path)
-    videoWriter = cv2.VideoWriter(os.path.join(args.output_path, os.path.basename(args.target_video_path)), fourcc, int(cap.get(cv2.CAP_PROP_FPS)), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    res_file_path = os.path.join(args.output_path, os.path.basename(args.target_video_path))
+    videoWriter = cv2.VideoWriter(res_file_path, fourcc, int(cap.get(cv2.CAP_PROP_FPS)), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
     all_f = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    face_frame = 0
     for i in tqdm(range(int(all_f))):
         ret, frame = cap.read()
         landmark = landmarkModel.get(frame)
@@ -67,11 +69,16 @@ def video_test(args):
             mask = np.transpose(mask[0].numpy(), (1, 2, 0))
             res = dealign(res, frame, back_matrix, mask)
             frame = res
-        else:
-            print('**** No Face Detect Error ****')
+            face_frame = face_frame + 1
         videoWriter.write(frame)
     cap.release()
     videoWriter.release()
+    
+    ## TODO
+    if face_frame is 0:
+        print('**** No Face Detect in Video ****')
+        return None
+    return res_file_path
 
 
 def deepFake_video_func(source_img_path, target_video_path,
@@ -92,7 +99,7 @@ def deepFake_video_func(source_img_path, target_video_path,
 
     # args = parser.parse_args()
     
-    args = {
+    args_dict = {
         'source_img_path' : source_img_path, 
         'target_video_path' : target_video_path,
         'output_path' : output_path,
@@ -101,7 +108,19 @@ def deepFake_video_func(source_img_path, target_video_path,
         'use_gpu' : use_gpu
     }
     
+    args = convert_dict_to_args(args = args_dict)
+    
     ## TODO 어떠한 형식인지 확인 필요
     res = video_test(args)
     
     return res
+
+
+class convert_dict_to_args:
+    def __init__(self, args):
+        self.source_img_path = args['source_img_path']
+        self.target_video_path = args['target_video_path']
+        self.output_path = args['output_path']
+        self.image_size = args['image_size']
+        self.merge_result = args['merge_result']
+        self.use_gpu = args['use_gpu']        
